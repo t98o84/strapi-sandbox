@@ -788,6 +788,68 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiNewsNews extends Schema.CollectionType {
+  collectionName: 'newses';
+  info: {
+    singularName: 'news';
+    pluralName: 'newses';
+    displayName: 'News';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Title: Attribute.String & Attribute.Required;
+    Content: Attribute.Blocks & Attribute.Required;
+    IsPrivate: Attribute.Boolean & Attribute.DefaultTo<false>;
+    Published: Attribute.DateTime;
+    Closed: Attribute.DateTime;
+    news_categories: Attribute.Relation<
+      'api::news.news',
+      'oneToMany',
+      'api::news-category.news-category'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::news.news', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::news.news', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiNewsCategoryNewsCategory extends Schema.CollectionType {
+  collectionName: 'news_categories';
+  info: {
+    singularName: 'news-category';
+    pluralName: 'news-categories';
+    displayName: 'NewsCategory';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::news-category.news-category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::news-category.news-category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -806,6 +868,8 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::news.news': ApiNewsNews;
+      'api::news-category.news-category': ApiNewsCategoryNewsCategory;
     }
   }
 }

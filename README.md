@@ -3,6 +3,7 @@
 ## Access
 
 - [Strapi](http://localhost:1337/admin)
+- [GraphQL](http://localhost:1337/graphql)
 - [Web](http://localhost:3000)
 
 ## Installation
