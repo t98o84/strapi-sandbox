@@ -1,0 +1,46 @@
+services:
+  strapi:
+    image: node:20-slim
+    env_file:
+      - .env
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_URL: "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}"
+      DATABASE_HOST: db
+      DATABASE_PORT: ${DB_PORT}
+      DATABASE_NAME: ${DB_DATABASE}
+      DATABASE_USERNAME: ${DB_USER}
+      DATABASE_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 1337:1337
+    working_dir: /app
+    volumes:
+      - ./strapi:/app
+    command: npm run develop
+
+  web:
+    image: node:22-slim
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./web:/app
+    command: npm run dev
+
+  db:
+    image: postgres:16
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_FORWARD_PORT}:${DB_PORT}"
+    volumes:
+      - db_data:/var/lib/postgresql/data/pgdata
+
+volumes:
+  db_data:
